@@ -1,0 +1,21 @@
+Plan:
+
+
+Shashlik_Runner:
+ - starts emulator
+ - install all pending APKs (and remove them from temp dir
+ - start passed product
+
+Dolphin installer / Service menu to install
+  - adds .desktop entry with package name
+  - copies APK to temp folder
+  - exec=shashlik_runner product.name
+  - check SDK version - warn if problem
+
+  bit of python or full Qt app?
+
+
+
+
+
+

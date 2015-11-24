@@ -1,0 +1,46 @@
+Android proceses:
+
+logd      917   1     14980  2516  ffffffff b76a14e1 S /system/bin/logd
+root      918   1     10144  456   c02d65b4 08095c75 S /sbin/healthd
+root      919   1     11956  1404  c02d65b4 b76b6355 S /system/bin/lmkd
+system    920   1     10112  848   c056a888 b7686b16 S /system/bin/servicemanager
+root      921   1     15680  2072  ffffffff b7606c91 S /system/bin/vold
+system    922   1     52020  3576  ffffffff b76585b6 S /system/bin/surfaceflinger
+root      924   1     9844   716   c02d65b4 b76f2355 S /system/bin/qemud
+shell     927   1     10076  1016  c03ec8a7 b76145b6 S /system/bin/sh
+root      928   1     13232  488   ffffffff 0806bde5 S /sbin/adbd
+root      929   1     19940  1544  ffffffff b765cc91 S /system/bin/netd
+root      930   1     10884  1060  c0578210 b76d4683 S /system/bin/debuggerd
+radio     931   1     15412  1628  ffffffff b76dec91 S /system/bin/rild
+drm       932   1     21996  3924  ffffffff b762fb16 S /system/bin/drmserver
+media     934   1     116884 9132  ffffffff b7614b16 S /system/bin/mediaserver
+install   935   1     10132  840   c05e4fab b77495b6 S /system/bin/installd
+keystore  936   1     14096  2172  c056a888 b76d0b16 S /system/bin/keystore
+
+root      937   1     444804 48428 ffffffff b7536fe5 S zygote
+root      946   2     0      0     c0254840 00000000 S kauditd
+system    1223  937   554376 76236 ffffffff b7538355 S system_server
+
+
+u0_a13    1312  937   505312 69752 ffffffff b7538355 S com.android.systemui
+u0_a31    1349  937   469244 36388 ffffffff b7538355 S com.android.inputmethod.latin
+u0_a7     1395  937   542756 52164 ffffffff b7538355 S com.google.android.gms
+radio     1426  937   476508 42220 ffffffff b7538355 S com.android.phone
+u0_a2     1494  937   461464 32392 ffffffff b7538355 S android.process.acore
+u0_a7     1597  937   539728 46348 ffffffff b7538355 S com.google.process.gapps
+u0_a7     1634  937   546188 49444 ffffffff b7538355 S com.google.process.location
+u0_a35    1662  937   504908 45116 ffffffff b7538355 S com.google.android.apps.maps
+u0_a7     1685  937   525196 34284 ffffffff b7538355 S com.google.android.gms.wearable
+u0_a36    1728  937   452024 26844 ffffffff b7538355 S com.android.music
+u0_a18    1747  937   463324 28584 ffffffff b7538355 S com.android.calendar
+u0_a5     1765  937   457612 32256 ffffffff b7538355 S android.process.media
+u0_a22    1786  937   454668 28384 ffffffff b7538355 S com.android.deskclock
+u0_a1     1805  937   452396 28792 ffffffff b7538355 S com.android.providers.calendar
+u0_a10    1828  937   465144 29376 ffffffff b7538355 S com.android.mms
+u0_a57    1920  937   687500 84240 ffffffff b7538355 S com.dotgears.flappybird
+u0_a4     1942  937   457720 25448 ffffffff b7538355 S com.android.dialer
+system    1959  937   450072 23920 ffffffff b7538355 S com.android.keychain
+u0_a9     1980  937   451172 23720 ffffffff b7538355 S com.android.managedprovisioning
+system    2019  937   462080 25200 ffffffff b7538355 S com.android.settings
+u0_a26    2043  937   470216 33216 ffffffff b7538355 S com.android.email
+u0_a28    2075  937   457764 26560 ffffffff b7538355 S com.android.exchange

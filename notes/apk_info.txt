@@ -1,0 +1,38 @@
+icon and name and package.
+
+./aapt dump badging ~/Downloads/Flappy_Bird_v1.3_\[apkandroid.blogspot.com\].apk
+
+
+
+
+
+
+
+activity at:
+ aapt dump xmltree ~/Downloads/Flappy_Bird_v1.3_\[apkandroid.blogspot.com\].apk AndroidManifest.xml
+
+
+ #Extract the AndroidManifest XML tree:
+shellcommand = "aapt dump xmltree " + filepath + " AndroidManifest.xml"
+process = subprocess.Popen(shellcommand, stdout=subprocess.PIPE, stderr=None, shell=True)
+xmlTree = process.communicate()[0]
+
+print "Number of Activities: " + str(xmlTree.count("activity"))
+print "Number of Services: " + str(xmlTree.count("service"))
+print "Number of BroadcastReceivers: " + str(xmlTree.count("receiver"))
+
+
+
+activity:
+
+          E: action (line=25)
+            A: android:name(0x01010003)="android.intent.action.MAIN" (Raw: "android.intent.action.MAIN")
+          E: category (line=26)
+            A: android:name(0x01010003)="android.intent.category.LAUNCHER" (Raw: "android.intent.category.LAUNCHER")
+
+
+
+
+ proper decoder to drop aapt dep: http://stackoverflow.com/questions/2097813/how-to-parse-the-androidmanifest-xml-file-inside-an-apk-package
+
+ OR https://github.com/androguard/androguard

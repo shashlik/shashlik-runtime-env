@@ -1,0 +1,27 @@
+#!/bin/bash
+SHASHLIK_PATH=/home/david/Android/Sdk
+LD_LIBRARY_PATH=$SHASHLIK_PATH/tools/lib64:
+TOOLS_PATH=$SHASHLIK_PATH/tools
+PLATFORMTOOLS_PATH=$SHASHLIK_PATH/tools
+
+PATH=$TOOLS_PATH:$PLATFORMTOOLS_PATH:$PATH
+
+emulator64-x86 -avd AVD_for_Shahslik -netspeed full -netdelay none &
+
+APK=$1
+
+if [ -a ~/.local/share/shashlik/$APK.apk ]
+then
+    until adb -e  install -r ~/.local/share/shashlik/$APK.apk
+    do
+        echo waiting for startup
+        sleep 1
+    done
+    rm ~/.local/share/shashlik/$APK.apk
+fi
+
+until adb -e shell monkey -p $APK -c android.intent.category.LAUNCHER 1
+do
+    echo waiting for startup
+    sleep 1
+done

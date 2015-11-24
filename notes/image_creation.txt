@@ -1,0 +1,4 @@
+adb shell pm disable com.android.launcher
+
+
+in settings: set lock security to None
