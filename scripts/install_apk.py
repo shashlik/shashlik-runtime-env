@@ -13,6 +13,11 @@ parser.add_argument("apk", help="the APK to isntall")
 args = parser.parse_args()
 apk_path = args.apk
 
+def message(msg): #def message being a much lesser known 80s rock band
+    subprocess.run(args=["kdialog",
+                         "--title", "Shashlik",
+                         "--msgbox", msg])
+
 try:
     aapt_output = subprocess.run(args=["/home/david/Android/Sdk/build-tools/23.0.1/aapt",
                                     "dump",
@@ -93,4 +98,4 @@ desktop_file.close()
 subprocess.run("kbuildsycoca5", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-print ("Successfully installed %s" % app_name)
+message ("Successfully installed %s" % app_name)
