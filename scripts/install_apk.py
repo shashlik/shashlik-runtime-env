@@ -45,7 +45,13 @@ if not m:
     sys.exit("Could not extract package name")
 package_name = m.group(1)
 app_name = apk_info["application-label"].strip("'")
-icon_path = apk_info["application-icon-640"].strip("'")
+
+icon_path=""
+for size in [640, 480, 320, 240, 213, 160, 120]:
+    entry = "application-icon-" + str(size)
+    if entry in apk_info:
+        icon_path = apk_info[entry].strip("'")
+        break
 
 if "native-code" in apk_info and not "x86" in apk_info["native-code"]:
     sys.exit("This package does not contain x86 native code, and can't run. Please find another APK built for x86")
@@ -77,10 +83,11 @@ desktop_file.write("Type=Application\n")
 desktop_file.write("Categories=Network;FileTransfer;Game;\n") #TODO
 desktop_file.write("Encoding=UTF-8\n")
 
-apk_zip = zipfile.ZipFile(apk_path)
-icon_in = apk_zip.open(icon_path, "r")
-icon_out = open(shashlik_dir + package_name + ".png", "wb")
-icon_out.write(icon_in.read())
+if icon_path:
+    apk_zip = zipfile.ZipFile(apk_path)
+    icon_in = apk_zip.open(icon_path, "r")
+    icon_out = open(shashlik_dir + package_name + ".png", "wb")
+    icon_out.write(icon_in.read())
 
 desktop_file.close()
 subprocess.run("kbuildsycoca5", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
