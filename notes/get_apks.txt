@@ -1,3 +1,9 @@
 http://apps.evozi.com/apk-downloader/
 
 http://codingteam.net/project/googleplaydownloader
+
+
+
+modified android-checkin to make me an x86 device.
+
+device ID: 36915876d930b2dc
