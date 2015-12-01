@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -9,26 +9,24 @@ import shutil
 import zipfile
 
 parser = argparse.ArgumentParser()
-parser.add_argument("apk", help="the APK to isntall")
+parser.add_argument("apk", help="the APK to install")
 args = parser.parse_args()
 apk_path = args.apk
 
-def message(msg): #def message being a much lesser known 80s rock band
-    subprocess.run(args=["kdialog",
+def message(msg):
+    subprocess.call(args=["kdialog",
                          "--title", "Shashlik",
                          "--msgbox", msg])
+    sys.exit(msg)
 
 try:
-    aapt_output = subprocess.run(args=["/home/david/Android/Sdk/build-tools/23.0.1/aapt",
+    aapt_output = subprocess.check_output(args=["/opt/shashlik/bin/aapt",
                                     "dump",
                                     "badging",
                                     apk_path],
-                                check=True,
-                                stdout=subprocess.PIPE,
                                 universal_newlines=True)
 except:
-    sys.exit("Could not get APK info")
-
+    message("Could not get APK info. Broken setup?")
 
 apk_info = {}
 
@@ -37,7 +35,7 @@ apk_info = {}
 
 #this script doesn't really work as user-permission comes up mulitple times, but it'll do for the bits we want
 
-for line in aapt_output.stdout.split('\n'):
+for line in aapt_output.split('\n'):
     if (not ':' in line):
         continue
 
@@ -47,7 +45,7 @@ for line in aapt_output.stdout.split('\n'):
 r = re.compile(r"name='([^']*)'")
 m = r.search(apk_info["package"])
 if not m:
-    sys.exit("Could not extract package name")
+    message("Could not extract package name")
 package_name = m.group(1)
 app_name = apk_info["application-label"].strip("'")
 
@@ -59,7 +57,7 @@ for size in [640, 480, 320, 240, 213, 160, 120]:
         break
 
 if "native-code" in apk_info and not "x86" in apk_info["native-code"]:
-    sys.exit("This package does not contain x86 native code, and can't run. Please find another APK built for x86")
+    message("This package does not contain x86 native code, and can't run. Please find another APK built for x86")
 
 shashlik_dir = os.path.expanduser("~/.local/share/shashlik/")
 app_dir = os.path.expanduser("~/.local/share/applications/")
@@ -81,7 +79,7 @@ desktop_file = open(app_dir + "/" + package_name + ".desktop", "w")
 desktop_file.write("[Desktop Entry]\n")
 desktop_file.write("Name=" + app_name + "\n")
 desktop_file.write("Icon=" + shashlik_dir + package_name + ".png\n")
-desktop_file.write("Exec=/home/david/daveshashlik2/scripts/emu " + package_name + "\n")
+desktop_file.write("Exec=/opt/shashlik/bin/shashlik-run " + package_name + "\n")
 
 desktop_file.write("Terminal=false\n")
 desktop_file.write("Type=Application\n")
@@ -95,7 +93,7 @@ if icon_path:
     icon_out.write(icon_in.read())
 
 desktop_file.close()
-subprocess.run("kbuildsycoca5", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+subprocess.call("kbuildsycoca5", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 message ("Successfully installed %s" % app_name)

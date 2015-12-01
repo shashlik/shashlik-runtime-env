@@ -1,12 +1,18 @@
 #!/bin/bash
-SHASHLIK_PATH=/home/david/Android/Sdk
-LD_LIBRARY_PATH=$SHASHLIK_PATH/tools/lib64:
-TOOLS_PATH=$SHASHLIK_PATH/tools
-PLATFORMTOOLS_PATH=$SHASHLIK_PATH/tools
+SHASHLIK_PATH=/opt/shashlik
+export LD_LIBRARY_PATH=$SHASHLIK_PATH/lib64:$LD_LIBRARY_PATH
+export PATH=$SHASHLIK_PATH/bin:$PATH
 
-PATH=$TOOLS_PATH:$PLATFORMTOOLS_PATH:$PATH
+#copy user AVD stuff if needed.
+#TODO phase this out by explicitly stating emulator paths rather than using AVD
+#as this is clearly a bit of a hack
+if [ ! -d ~/.android ]
+then
+    cp -R $SHASHLIK_PATH/useravd ~/.android
+    chown -R $USER:$USER  ~/.android
+fi
 
-emulator64-x86 -avd AVD_for_Shahslik -netspeed full -netdelay none &
+emulator64-x86 -avd AVD_for_Shahslik -no-boot-anim -verbose &
 
 APK=$1
 
