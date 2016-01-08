@@ -27,6 +27,10 @@ def contains_makefile(path):
             return True
     return False
 
+for r in manifest.getroot().findall("remote"):
+    if r.attrib["fetch"] == "..":
+        r.attrib["fetch"] = "https://android.googlesource.com"
+
 for p in manifest.getroot().findall("project"):
     path = p.attrib["path"]
     if "chromium" in path:
