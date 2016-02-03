@@ -7,6 +7,8 @@ import re
 import argparse
 import shutil
 import zipfile
+import tempfile
+from constants import SHASHLIK_INSTALL_DIR
 
 parser = argparse.ArgumentParser()
 parser.add_argument("apk", help="the APK to install")
@@ -60,32 +62,27 @@ if "native-code" in apk_info and not "x86" in apk_info["native-code"]:
     message("This package does not contain x86 native code, and can't run. Please find another APK built for x86")
 
 shashlik_dir = os.path.expanduser("~/.local/share/shashlik/")
-app_dir = os.path.expanduser("~/.local/share/applications/")
 
 try:
     os.mkdir(shashlik_dir)
 except:
     pass
-try:
-    os.mkdir(app_dir)
-except:
-    pass
+
 
 #copy APK for pending installation when we first run it
 shutil.copyfile(apk_path, shashlik_dir + package_name + ".apk")
 
-#write desktop file and extract icon
-desktop_file = open(app_dir + "/" + package_name + ".desktop", "w")
-desktop_file.write("[Desktop Entry]\n")
-desktop_file.write("Name=" + app_name + "\n")
-desktop_file.write("Icon=" + shashlik_dir + package_name + ".png\n")
-desktop_file.write("Exec=/opt/shashlik/bin/shashlik-run " + package_name + "\n")
+#write desktop file into a temp location
+desktop_file = tempfile.NamedTemporaryFile(delete=False, suffix=".desktop", prefix="shashlik-")
+desktop_file.write(b"[Desktop Entry]\n")
+desktop_file.write(str.encode("Name=%s\n" % app_name))
+desktop_file.write(str.encode("Icon=%s/%s.png\n" % (shashlik_dir , package_name)))
+desktop_file.write(str.encode("Exec=/opt/shashlik/bin/shashlik-run %s \n" % package_name))
+desktop_file.write(b"Terminal=false\n")
+desktop_file.write(b"Type=Application\n")
+desktop_file.write(b"Encoding=UTF-8\n")
 
-desktop_file.write("Terminal=false\n")
-desktop_file.write("Type=Application\n")
-desktop_file.write("Categories=Network;FileTransfer;Game;\n") #TODO
-desktop_file.write("Encoding=UTF-8\n")
-
+#extract icon
 if icon_path:
     apk_zip = zipfile.ZipFile(apk_path)
     icon_in = apk_zip.open(icon_path, "r")
@@ -93,7 +90,12 @@ if icon_path:
     icon_out.write(icon_in.read())
 
 desktop_file.close()
-subprocess.call("kbuildsycoca5", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+#install desktop icon. xdg-desktop-menu is better than copying the file
+subprocess.call(["xdg-desktop-menu", "install", "/opt/shashlik/data/shashlik-apps.directory", desktop_file.name])
+#,stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+os.unlink(desktop_file.name)
 
 
 message ("Successfully installed %s" % app_name)
