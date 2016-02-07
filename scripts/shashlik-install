@@ -77,7 +77,7 @@ desktop_file = tempfile.NamedTemporaryFile(delete=False, suffix=".desktop", pref
 desktop_file.write(b"[Desktop Entry]\n")
 desktop_file.write(str.encode("Name=%s\n" % app_name))
 desktop_file.write(str.encode("Icon=%s/%s.png\n" % (shashlik_dir , package_name)))
-desktop_file.write(str.encode("Exec=/opt/shashlik/bin/shashlik-run %s \n" % package_name))
+desktop_file.write(str.encode("Exec=/opt/shashlik/bin/shashlik-run %s \"%s\"\n" % (package_name, app_name)))
 desktop_file.write(b"Terminal=false\n")
 desktop_file.write(b"Type=Application\n")
 desktop_file.write(b"Encoding=UTF-8\n")
@@ -91,7 +91,7 @@ if icon_path:
 
 desktop_file.close()
 
-#install desktop icon. xdg-desktop-menu is better than copying the file
+#install desktop icon. xdg-desktop-menu is better than copying the file when dealing with categories
 subprocess.call(["xdg-desktop-menu", "install", "/opt/shashlik/data/shashlik-apps.directory", desktop_file.name])
 #,stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
