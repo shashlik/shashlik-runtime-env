@@ -1,0 +1,1 @@
+SHASHLIK_INSTALL_DIR="/opt/shashlik"
