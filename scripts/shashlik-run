@@ -113,7 +113,15 @@ def launch_app(package_name):
 
 apk_path = shashlik_dir + "/" + args.package_name + ".apk"
 
+#if there's an emulator just re-use it     
+if subprocess.call(args=["pgrep", "emulator64-x86"]) == 0:
+    install_app(apk_path)
+    launch_app(args.package_name)
+    sys.exit(0)
+    
+print("starting emulator")
 emulator_process = start_emulator()
+launchedEmulator = True
 
 #send the icon in a new thread way so we don't keep blocking if the emulator failed to start
 icon_path = shashlik_dir + "/" + args.package_name + ".png"
@@ -124,11 +132,9 @@ t.start()
 #install the apk and launch it
 #it polls the emulator to see when we're ready...not the most elegant
 #long term I might fuse mount the /data partition so we can just copy the APK in with no installation?
-apk_path = shashlik_dir + args.package_name + ".apk"
 if os.path.exists(apk_path):
     while not install_app(apk_path) and emulator_process.poll() == None:
-        sleep(1)
-    os.unlink(apk_path)
+        sleep(5)
 
 while not launch_app(args.package_name) and emulator_process.poll() == None:
     sleep(1)
