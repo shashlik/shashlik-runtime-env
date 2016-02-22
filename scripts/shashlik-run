@@ -49,8 +49,8 @@ def start_emulator():
             "-selinux", "disabled"]
 
     emulator_env = os.environ
-    emulator_env["LD_LIBRARY_PATH"] = lib_path + ":" + emulator_env["LD_LIBRARY_PATH"]
-    emulator_env["PATH"] = "/opt/shashlik/bin" + ":" + emulator_env["PATH"]
+    emulator_env["LD_LIBRARY_PATH"] = lib_path + ":" + os.getenv("LD_LIBRARY_PATH","/lib")
+    emulator_env["PATH"] = "/opt/shashlik/bin" + ":" + os.getenv("PATH", "/usr/bin:/bin")
     emulator_env["SHASHLIK_APPNAME"] = args.pretty_name
     emulator_env["SHASHLIK_ICON"] = "%s/%s.png" % (shashlik_dir, args.package_name)
 
