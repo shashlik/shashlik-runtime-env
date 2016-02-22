@@ -20,7 +20,7 @@ import threading
 
 images_path = "/opt/shashlik/android"
 lib_path = "/opt/shashlik/lib64"
-shashlik_dir = os.path.expanduser("~/.local/share/shashlik/")
+shashlik_dir = os.path.expanduser("~/.local/share/shashlik") # FIXME use the XDG lib and put in constants.py
 
 parser = argparse.ArgumentParser()
 
@@ -35,6 +35,12 @@ args = parser.parse_args()
 #starts the emulator instance.
 #returns a subprocess.Popen instance
 def start_emulator():
+
+    try:
+        os.mkdirs(shashlik_dir+"/system")
+    except:
+        pass
+
     emulator_args = [
             "/opt/shashlik/bin/emulator64-x86",
             "-sysdir", "%s" % images_path ,
@@ -101,6 +107,8 @@ def launch_app(package_name):
         return "injected" in out
     except:
         return False
+
+apk_path = shashlik_dir + "/" + args.package_name + ".apk"
 
 emulator_process = start_emulator()
 
