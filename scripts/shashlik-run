@@ -91,7 +91,10 @@ def install_app(package_path):
                                             package_path],
                                       universal_newlines=True)
         print (out)
-        return "Success" in out
+        rc = "Success" in out
+        if rc:
+            os.unlink(apk_path)
+        return rc
     except:
         return False
 
