@@ -16,7 +16,6 @@ args = parser.parse_args()
 apk_path = args.apk
 
 def message(msg):
-    print (msg)
     try:
         subprocess.call(args=["kdialog",
                              "--title", "Shashlik",
