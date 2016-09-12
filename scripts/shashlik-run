@@ -41,18 +41,22 @@ class ShashlikController(http.server.BaseHTTPRequestHandler):
         apk_name = args.package_name
         apk_path = SHASHLIK_DIR + "/" + apk_name + ".apk"
         if os.path.exists(apk_path):
-            s.send_response(200)
-            s.send_header("Content-type", "application/vnd.android.package-archive")
-            s.end_headers()
-            with open(apk_path, "rb") as apk_file:
+            apk_file = open(apk_path, "rb")
+            if apk_file:
+                s.send_response(200)
+                s.send_header("Content-type", "application/vnd.android.package-archive")
+                s.end_headers()
                 while True:
                     chunk = apk_file.read(1024)
                     if (not chunk):
                         break
                     s.wfile.write(chunk)
-            os.unlink(apk_path)
+                apk_file.close()
+            else:
+                s.send_response(403)
+                s.end_headers()
         else:
-            s.send_response(403)
+            s.send_response(404)
             s.end_headers()
 
     def startup(s):
@@ -145,8 +149,6 @@ def install_app(package_path):
                                       universal_newlines=True)
         print (out)
         rc = "Success" in out
-        if rc:
-            os.unlink(apk_path)
         return rc
     except:
         return False
