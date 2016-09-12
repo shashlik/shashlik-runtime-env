@@ -10,6 +10,7 @@ import threading
 import socketserver
 import http.server
 from urllib import parse
+from constants import *
 
 PORT=60057
 
@@ -22,10 +23,6 @@ PORT=60057
 
 #Note. It is a proof of concept whislt we figure out what we want, I'm well aware that some parts are rubbish
 #and there is are a few race conditions about startup
-
-images_path = "/opt/shashlik/android"
-lib_path = "/opt/shashlik/lib64"
-shashlik_dir = os.path.expanduser("~/.local/share/shashlik") # FIXME use the XDG lib and put in constants.py
 
 parser = argparse.ArgumentParser()
 
@@ -42,7 +39,7 @@ class ShashlikController(http.server.BaseHTTPRequestHandler):
     def apk_file(s):
         print("Sending APK")
         apk_name = args.package_name
-        apk_path = shashlik_dir + "/" + apk_name + ".apk"
+        apk_path = SHASHLIK_DIR + "/" + apk_name + ".apk"
         if os.path.exists(apk_path):
             s.send_response(200)
             s.send_header("Content-type", "application/vnd.android.package-archive")
@@ -80,28 +77,28 @@ class ShashlikController(http.server.BaseHTTPRequestHandler):
 def start_emulator():
 
     try:
-        os.mkdirs(shashlik_dir+"/system")
+        os.mkdirs("%s/system" % SHASHLIK_DIR)
     except:
         pass
 
     emulator_args = [
-            "/opt/shashlik/bin/emulator64-x86",
-            "-sysdir", "%s" % images_path ,
-            "-system","%s/system.img" % images_path ,
-            "-ramdisk", "%s/ramdisk.img" % images_path ,
-            "-kernel", "%s/kernel-qemu" % images_path ,
+            SHASHLIK_EMULATOR,
+            "-sysdir", SHASHLIK_IMAGE_DIR,
+            "-system","%s/system.img" % SHASHLIK_IMAGE_DIR,
+            "-ramdisk", "%s/ramdisk.img" % SHASHLIK_IMAGE_DIR,
+            "-kernel", "%s/kernel-qemu" % SHASHLIK_IMAGE_DIR,
             "-memory", "512",
-            "-data", "%s/userdata.img" % shashlik_dir,
-            "-datadir", "%s/system" % shashlik_dir,
+            "-data", "%s/userdata.img" % SHASHLIK_DIR,
+            "-datadir", "%s/system" % SHASHLIK_DIR,
             "-noskin",
             "-gpu", "on",
             "-selinux", "disabled"]
 
     emulator_env = os.environ
-    emulator_env["LD_LIBRARY_PATH"] = lib_path + ":" + os.getenv("LD_LIBRARY_PATH","/lib")
-    emulator_env["PATH"] = "/opt/shashlik/bin" + ":" + os.getenv("PATH", "/usr/bin:/bin")
+    emulator_env["LD_LIBRARY_PATH"] = SHASHLIK_LIB_DIR + ":" + os.getenv("LD_LIBRARY_PATH","/lib")
+    emulator_env["PATH"] = SHASHLIK_BIN_DIR + ":" + os.getenv("PATH", "/usr/bin:/bin")
     emulator_env["SHASHLIK_APPNAME"] = args.pretty_name
-    emulator_env["SHASHLIK_ICON"] = "%s/%s.png" % (shashlik_dir, args.package_name)
+    emulator_env["SHASHLIK_ICON"] = "%s/%s.png" % (SHASHLIK_DIR, args.package_name)
 
     return subprocess.Popen(emulator_args, env=emulator_env)
 
@@ -141,7 +138,7 @@ def start_controller():
 
 def install_app(package_path):
     try:
-        out = subprocess.check_output(args=["/opt/shashlik/bin/adb",
+        out = subprocess.check_output(args=[SHASHLIK_ADB,
                                             "-e",
                                             "install",
                                             package_path],
@@ -157,7 +154,7 @@ def install_app(package_path):
 
 def launch_app(package_name):
     try:
-        out = subprocess.check_output(args=["/opt/shashlik/bin/adb",
+        out = subprocess.check_output(args=[SHASHLIK_ADB,
                                             "-e",
                                             "shell",
                                             "monkey", "-p", package_name, "-c", "android.intent.category.LAUNCHER", "1"],
@@ -167,7 +164,7 @@ def launch_app(package_name):
     except:
         return False
 
-apk_path = shashlik_dir + "/" + args.package_name + ".apk"
+apk_path = SHASHLIK_DIR + "/" + args.package_name + ".apk"
 
 #if there's an emulator just re-use it     
 if subprocess.call(args=["pgrep", "emulator64-x86"]) == 0:
@@ -179,7 +176,7 @@ print("starting emulator")
 emulator_process = start_emulator()
 
 #send the icon in a new thread way so we don't keep blocking if the emulator failed to start
-icon_path = shashlik_dir + "/" + args.package_name + ".png"
+icon_path = SHASHLIK_DIR + "/" + args.package_name + ".png"
 icon_thread = threading.Thread(target=send_icon, args=(icon_path,))
 icon_thread.daemon = True
 icon_thread.start()
@@ -192,5 +189,3 @@ if emulator_process.returncode == None:
     emulator_process.wait()
 
 httpd.shutdown()
-
-
