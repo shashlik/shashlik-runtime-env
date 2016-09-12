@@ -65,7 +65,11 @@ if "native-code" in apk_info and not "x86" in apk_info["native-code"]:
     message("This package does not contain x86 native code, and can't run. Please find another APK built for x86")
 
 try:
-    os.mkdir(SHASHLIK_DIR)
+    if not os.path.exists(SHASHLIK_DIR):
+        os.mkdir(SHASHLIK_DIR)
+    
+    if not os.path.exists("%s/system" % SHASHLIK_DIR):
+        os.mkdir("%s/system" % SHASHLIK_DIR)
 except:
     pass
 
