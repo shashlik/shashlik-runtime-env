@@ -39,7 +39,7 @@ class ShashlikController(http.server.BaseHTTPRequestHandler):
     def apk_file(s):
         print("Sending APK")
         apk_name = args.package_name
-        apk_path = SHASHLIK_DIR + "/" + apk_name + ".apk"
+        apk_path = "%s/%s.apk" % (SHASHLIK_DIR, apk_name)
         if os.path.exists(apk_path):
             apk_file = open(apk_path, "rb")
             if apk_file:
@@ -79,9 +79,8 @@ class ShashlikController(http.server.BaseHTTPRequestHandler):
 #starts the emulator instance.
 #returns a subprocess.Popen instance
 def start_emulator():
-
     try:
-        os.mkdirs("%s/system" % SHASHLIK_DIR)
+        os.mkdir("%s/system" % SHASHLIK_DIR)
     except:
         pass
 
@@ -166,7 +165,7 @@ def launch_app(package_name):
     except:
         return False
 
-apk_path = SHASHLIK_DIR + "/" + args.package_name + ".apk"
+apk_path = "%s/%s.apk" % (SHASHLIK_DIR, args.package_name)
 
 #if there's an emulator just re-use it     
 if subprocess.call(args=["pgrep", "emulator64-x86"]) == 0:
@@ -178,7 +177,7 @@ print("starting emulator")
 emulator_process = start_emulator()
 
 #send the icon in a new thread way so we don't keep blocking if the emulator failed to start
-icon_path = SHASHLIK_DIR + "/" + args.package_name + ".png"
+icon_path = "%s/%s.png" % (SHASHLIK_DIR, args.package_name)
 icon_thread = threading.Thread(target=send_icon, args=(icon_path,))
 icon_thread.daemon = True
 icon_thread.start()
