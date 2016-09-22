@@ -71,7 +71,7 @@ except:
 
 
 #copy APK for pending installation when we first run it
-shutil.copyfile(apk_path, SHASHLIK_DIR + package_name + ".apk")
+shutil.copyfile(apk_path, "%s/%s.apk" % (SHASHLIK_DIR, package_name))
 
 #write desktop file into a temp location
 desktop_file = tempfile.NamedTemporaryFile(delete=False, suffix=".desktop", prefix="shashlik-")
@@ -87,7 +87,7 @@ desktop_file.write(b"Encoding=UTF-8\n")
 if icon_path:
     apk_zip = zipfile.ZipFile(apk_path)
     icon_in = apk_zip.open(icon_path, "r")
-    icon_out = open(SHASHLIK_DIR + package_name + ".png", "wb")
+    icon_out = open("%s/%s.png" % (SHASHLIK_DIR, package_name), "wb")
     icon_out.write(icon_in.read())
 
 desktop_file.close()
